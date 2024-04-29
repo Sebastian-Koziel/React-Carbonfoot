@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Sedan';
+    src: url('./assets/Sedan-Regular.ttf') format('truetype');    
+    font-weight: normal;
+    font-style: normal;
+  }
+
+@font-face {
+    font-family: 'Sedan';
+    src: url('./assets/Sedan-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
