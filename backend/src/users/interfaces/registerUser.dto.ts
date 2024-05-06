@@ -1,7 +1,6 @@
-import { Document } from "mongoose";
 
-export interface User extends Document {
-    _id: string
+
+export type RegisterUserDto = {
     email: string
     password: string
     name: string

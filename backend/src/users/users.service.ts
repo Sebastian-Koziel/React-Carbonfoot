@@ -1,7 +1,9 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Injectable, Inject, NotFoundException } from "@nestjs/common";
 import { Model } from 'mongoose';
-import { CreateUserDto } from "./dtos/create-user.dto";
-import { User } from "./interfaces/user.interface"
+
+
+import { RegisterUserDto } from "./interfaces/registerUser.dto";
+import { User } from "./interfaces/user.interface";
 
 @Injectable()
 export class UsersService {
@@ -11,7 +13,7 @@ export class UsersService {
         return this.userModel.find().select('-password').exec();
     }
 
-    async create(createUserDto: CreateUserDto): Promise<any>{
+    async create(createUserDto: RegisterUserDto): Promise<any>{
         const createdUser = await this.userModel.create(createUserDto)
         return createdUser._id;
     }
@@ -26,19 +28,20 @@ export class UsersService {
 
     async find(login: string): Promise<User[]> {
         return this.userModel.find({ login });
-      }
+    }
 
+    async findByVerificationToken(token: string): Promise<User> {
+        return this.userModel.findOne({ emailVerificationToken: token });
+    }
 
-    async remove(id: string){
-        const filter = {_id : id}
-        return this.userModel.deleteOne(filter);
-      }
-    async update(id: string, attrs: Partial<User>){
+    async update(id: string, attrs: Partial<User>): Promise<User>{
         let user = await this.findOne(id);
         if(!user){
-            throw new Error(`UPDATE - no user by this number`)
+            throw new NotFoundException(`No user found with ID ${id}`);
         }
         Object.assign(user, attrs);
-        return user.save();
+        await user.save();
+
+        return user;
     }
 }

@@ -3,24 +3,22 @@
 GET http://localhost:3000/auth
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgZW51bSIsInN1YiI6IjY0NTM4YzAwMDY2YzZhMjg1ZTIxNzA2YSIsImlhdCI6MTY4MzE5NjkzN30.8QS4m9NjbCLIJaEp6k5yUH8TvTFx-Yj1EDmv9iRfMTA
 ###post
-POST http://localhost:3000/auth/create
+POST http://localhost:3000/mailer/sendEmail
+Content-Type: application/json
+
+
+###register
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "login": "stefan",
+    "email": "stefan@gmail.com",
     "password": "stefan",
     "name": "stefan",
-    "surname": "stefan",
-    "role": "administration"
-}
-
-###login
-POST http://localhost:3000/auth/login
-Content-Type: application/json
-
-{
-    "login": "Roman6",
-    "password": "Roman6"
+    "surname": "tring",
+    "company": "string",
+    "isEmailVerified": false,
+    "emailVerificationToken": ""
 }
 
 ### particular

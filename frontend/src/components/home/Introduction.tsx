@@ -4,8 +4,8 @@ import mainPic from "../../assets/main.png"
 
 const Introduction = () => {
   return (
-    <Container sx={{height:`450px`}}>
-        <Stack direction="row" sx={{height:`100%`}}>
+    <Container >
+        <Stack direction={{ xs: 'column', md: 'row' }} sx={{height:`100%`}}>
             <Box bgcolor="blue" sx={{flex:`1`}}>
             <Typography variant="h4" marginTop="80px">Darmowy kalkulator śladu węglowego Twojej firmy</Typography>
                 <Typography variant="h5" marginTop="30px">Dołącz do naszej społeczności i staw czoła wyzwaniom zrównoważonego rozwoju.</Typography>

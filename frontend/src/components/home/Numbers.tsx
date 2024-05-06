@@ -14,7 +14,7 @@ const stats = [
 const Numbers = () => {
     return (
         <Container sx={{
-            display: "flex", justifyContent: "center"
+            display: "flex", justifyContent: "center", marginTop: "20px"
         }}>
         <Paper elevation={4} sx={{ p: 3, borderRadius: 2, boxShadow: 3, width: "80%" }}>
           <Grid container spacing={4} justifyContent="space-around">

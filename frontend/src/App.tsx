@@ -8,6 +8,9 @@ import Summary from './components/dashboard/summary/Summary'
 import EmissionFactors from './components/dashboard/emissionFactors/EmissionFactors'
 import Raports from './components/dashboard/raports/Raports'
 import Products from './components/dashboard/products/Products'
+import RegisterConfirmation from "./components/confirmation/Confirmation";
+import Validation from "./components/confirmation/Validation";
+import { tokenValidationLoader } from "./components/confirmation/EmailValidationFetch";
 
 
 
@@ -25,6 +28,15 @@ const App = () => {
     {
       path:"/register",
       element:<Register/>
+    },
+    {
+      path:"/confirmation",
+      element:<RegisterConfirmation/>,
+    },
+    {
+      path: "/validation/:token",
+      element: <Validation />,
+      loader: tokenValidationLoader
     },
     {
       path: "/dashboard",

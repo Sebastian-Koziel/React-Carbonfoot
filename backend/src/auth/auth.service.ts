@@ -2,6 +2,9 @@ import { BadRequestException, NotFoundException, Injectable } from "@nestjs/comm
 import { UsersService } from "../users/users.service";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
+import { RegisterUserDto } from "src/users/interfaces/registerUser.dto";
+import { ConfigService } from "@nestjs/config";
+import { MailerService } from "src/mailer/mailer.service";
 
 
 
@@ -10,12 +13,15 @@ export class AuthService{
 
     constructor(
         private usersService: UsersService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private readonly configService: ConfigService,
+        private mailerService: MailerService
         ) {}
 
-    async register(login: string, password: string){
+    async register(data:RegisterUserDto){
+        const {password, email } = data;
         // see if email is in use
-        const users = await this.usersService.find(login);
+        const users = await this.usersService.find(email);
         if(users.length){
             throw new BadRequestException('email in use');
         }
@@ -23,17 +29,36 @@ export class AuthService{
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        //create a new user and save it  TODO - change for proper create user
-        const data:any= {
-            login:login, 
-            password: hashedPassword,
-            
-        }
-        const newUser = await this.usersService.create(data)
+        data.password = hashedPassword;
+        data.isEmailVerified = false;
+
+        // Generate a verification token
+        data.emailVerificationToken = this.jwtService.sign({ email },
+            { secret: this.configService.get<string>(`JWT_SECRET`) });
+
+        const newUser = await this.usersService.create(data);
+
+        // Send verification email
+        await this.mailerService.sendConfirmationEmail(email, data.emailVerificationToken);
+
         //return the user
         return newUser;
     }
 
+    async verify(token: string) {
+        const user = await this.usersService.findByVerificationToken(token);
+
+        if (!user) {
+        throw new NotFoundException('Invalid token or account already activated.');
+        }
+
+        user.isEmailVerified = true;
+        user.emailVerificationToken = null; // Clear the token after verification
+        await this.usersService.update(user._id, user);
+
+        return 'Email successfully verified.';
+    }
+    
     async logIn(login: string, password: string){
         const [user] = await this.usersService.find(login);
         if(!user){
@@ -45,7 +70,7 @@ export class AuthService{
             throw new BadRequestException('Wrong user or password');
         }
 
-        const payload = {username: user.login, sub: user._id};
+        const payload = {username: user.email, sub: user._id};
         
 
         const userWithNoPassword = await this.usersService.findOneNoPass(user._id);

@@ -1,10 +1,9 @@
- import { Body, Controller, Post, Get, Param, UseGuards, Delete } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { Body, Controller, Post, Get, Param, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './interfaces/user.interface';
 import { AuthService } from '../auth/auth.service';
-import { AuthGuard } from '../auth/auth.guard';
-import { UpdateUser } from './interfaces/updateUser.interface';
+import { RegisterUserDto } from './interfaces/registerUser.dto';
+import { User } from './interfaces/user.interface';
+
 
 @Controller('auth')
 export class UsersController {
@@ -13,49 +12,25 @@ export class UsersController {
         private authService: AuthService
         ) {}
     
-    @Post('create')
-    createUser(@Body() body: CreateUserDto) {
+    @Post('/register')
+    async registerUser(@Body() body: RegisterUserDto) {
         console.log(`in user constroller ${body.name}`);
-        return
+        return await this.authService.register(body);
+    }
+    @Get('/verify')
+    async verifyEmail(@Query('token') token: string): Promise<string> {
+        console.log(`verify`)
+     return await this.authService.verify(token);
     }
 
-    @Post('update')
-    updateUser(@Body() body: UpdateUser) {
-        return this.usersService.update(body.id, body.attr);
-    }
-
-    //special end point for changing access set for user - so only admin can do that
-    
-    @UseGuards(AuthGuard)
-    @Post('updateAccess')
-    updateUserAccess(@Body() body: UpdateUser) {
-        return this.usersService.update(body.id, body.attr);
-    }
-
-    @Post('login')
-    logIn(@Body() body: CreateUserDto) {
-        return this.authService.logIn(body.login, body.password)
-    }
-
-    //@Access_decorator(Access.usersTab_access)
-    //@UseGuards(AuthGuard, AccessGuard)
     @Get()
     async findAll(): Promise<User[]> {
         return this.usersService.findAll();
     }
 
-    //@Access_decorator(Access.usersTab_access)
-    //@UseGuards(AuthGuard, AccessGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<User>{
         return this.usersService.findOne(id);
-    }
-
-    //@Access_decorator(Access.usersTab_access)
-    //@UseGuards(AuthGuard, AccessGuard)
-    @Delete('/:id')
-    async remove(@Param('id') id:string){
-        this.usersService.remove(id);
     }
 
     
