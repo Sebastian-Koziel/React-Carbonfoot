@@ -26,8 +26,8 @@ export class UsersService {
         return this.userModel.findById(id, '-password');
     }
 
-    async find(login: string): Promise<User[]> {
-        return this.userModel.find({ login });
+    async find(email: string): Promise<User[]> {
+        return this.userModel.find({ email });
     }
 
     async findByVerificationToken(token: string): Promise<User> {

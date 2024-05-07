@@ -4,6 +4,7 @@ import Logo from "../home/Logo";
 import { FormikHelpers, useFormik} from "formik";
 import { validationSchema } from "./validationSchema";
 import { endPoints } from "../../endPoints/endPoints";
+import { NewUser } from "../../interfaces/interfaces";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Register = () => {
 
   const onSubmit = async (values:FormValues, actions:FormikHelpers<FormValues>) => {
     
-    const newUser = {
+    const newUser: NewUser = {
       name: values.name,
       surname: values.surname,
       company: values.company,
@@ -29,8 +30,11 @@ const Register = () => {
       password: values.password,
       marketingConsent: values.marketing,
       termsAccepted: values.terms,
-    }
+      isEmailVerified: false,
+      emailVerificationToken: ''
 
+    }
+    console.log(newUser)
     try {
       const response = await fetch(endPoints.registerUser, {
         method: 'POST',
@@ -47,17 +51,12 @@ const Register = () => {
       }
 
       actions.resetForm();
-      
-
-    } catch (error) {
-      actions.setFieldError(`general`, error.message);
-    } finally {
       actions.setSubmitting(false);
       navigate("/confirmation");
-    }
 
-
-    
+    } catch (error: any) {
+      actions.setFieldError(`general`, error.message);
+    } 
   };
 
   const initialValues = {

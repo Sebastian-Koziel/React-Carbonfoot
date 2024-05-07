@@ -34,7 +34,7 @@ export class MailerService {
             <div class="container">
                 <h1>Welcome to Carbonfoot!</h1>
                 <p>Thank you for registering with us. Please confirm your email address by clicking on the link below:</p>
-                <a href="localhost:3000/auth/verify?token=${token}" target="_blank">Verify Email Address</a>
+                <a href="http://localhost:5173/validation/${token}" target="_blank">Verify Email Address</a>
                 <p>If you did not create an account, no further action is required.</p>
                 <p>Regards,<br/>Carbonfoot Team</p>
             </div>

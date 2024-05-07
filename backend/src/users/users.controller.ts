@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { AuthService } from '../auth/auth.service';
 import { RegisterUserDto } from './interfaces/registerUser.dto';
 import { User } from './interfaces/user.interface';
+import { LoginUserDto } from './interfaces/loginUser.dto';
 
 
 @Controller('auth')
@@ -21,6 +22,11 @@ export class UsersController {
     async verifyEmail(@Query('token') token: string): Promise<string> {
         console.log(`verify`)
      return await this.authService.verify(token);
+    }
+
+    @Post('/login')
+    logIn(@Body() body: LoginUserDto) {
+        return this.authService.logIn(body.email, body.password)
     }
 
     @Get()

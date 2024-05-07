@@ -59,10 +59,15 @@ export class AuthService{
         return 'Email successfully verified.';
     }
     
-    async logIn(login: string, password: string){
-        const [user] = await this.usersService.find(login);
+    async logIn(email: string, password: string){
+        const [user] = await this.usersService.find(email);
+        
         if(!user){
             throw new NotFoundException('Wrong user or password');
+        }
+
+        if(!user.isEmailVerified){
+            throw new NotFoundException('Please confirm your email');
         }
 
         const match = await bcrypt.compare(password, user.password);
