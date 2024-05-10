@@ -5,12 +5,16 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 
 import { MailerAppModule } from './mailer/mailer.module';
+import { FactorsModule } from './factors/factors.module';
+import { RaportsModule } from './raports/raports.module';
 
 @Module({
   imports: [UsersModule, MailerAppModule,
     ConfigModule.forRoot({
       isGlobal: true
     }),
+    FactorsModule,
+    RaportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
