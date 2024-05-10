@@ -1,7 +1,19 @@
-import { Box } from "@mui/material"
+import { Box, Button } from "@mui/material"
 import DataTable from "../../../utils/DataTable"
+import { useState } from "react";
+import FactorFormModal from "./AddNewFactorModal";
 
 const EmissionFactors = () => {
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   const data = [
     {name: `test1`, comment:`sassdasd`},
@@ -22,10 +34,11 @@ const EmissionFactors = () => {
 
   return (
     <Box >
+      <Button variant="contained" onClick={handleOpenModal}>Add New Factor</Button>
       EmissionFactorissionFactorsEmissionFactorsEmissionFactorsEmissionFactors
       <DataTable columns={columnsSetup} data={data} />
-
-      </Box>
+      <FactorFormModal open={isModalOpen} onClose={handleCloseModal} />
+    </Box>
   )
 }
 
