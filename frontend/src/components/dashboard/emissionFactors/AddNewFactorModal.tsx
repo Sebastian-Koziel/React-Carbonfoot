@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Box, Typography, Switch, Select, MenuItem } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Box, Typography, Switch, Select, MenuItem, ListItemText, InputLabel, FormHelperText, FormControl } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { factorValidationSchema } from './FactorValidationSchema';
@@ -13,7 +13,28 @@ interface Props {
 }
 
 const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
-    
+   const regionsList = [
+    {id:0, name:"all"},
+    {id:1, name:"Polska"},
+    {id:2, name:"Niemcy"},
+    {id:3, name:"EU"}
+    ]
+
+    const unitsList = [
+      {id:0, name:"g"},
+      {id:1, name:"kg"},
+      {id:2, name:"tony"},
+      
+      ]
+
+      const yearsList = [
+        {id:0, name:"2021"},
+        {id:1, name:"2022"},
+        {id:2, name:"2023"},
+        {id:3, name:"2024"},
+        
+        ]
+
     const navigate = useNavigate();
 
     interface FormValues {
@@ -26,10 +47,16 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
         isPublic: boolean
         addedBy: string
       }
+ 
+      const handleClose = () => {
+        resetForm(); 
+        onClose(); 
+      };
 
     const onSubmit = async (values:FormValues, actions:FormikHelpers<FormValues>) => {
     
-        const newUser: NewFactor = {
+
+        const newFactor: NewFactor = {
             name : values.name,
             region: values.region,
             year: values.year,
@@ -40,14 +67,14 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
             addedBy: values.addedBy,
     
         }
-        console.log(newUser)
+        console.log(newFactor)
         try {
           const response = await fetch(endPoints.registerUser, {
             method: 'POST',
             headers: {
               'Content-type': 'application/json',
             },
-            body: JSON.stringify(newUser),
+            body: JSON.stringify(newFactor),
           });
     
           const data = await response.json()
@@ -69,36 +96,48 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
         name : '',
         region: '',
         year: '',
-        value: 0,
+        value: 0, 
         units: '',
         comment: '',
         isPublic: true,
         addedBy: '',
     };
     
-    const {values, errors, touched, handleBlur, handleChange, isSubmitting, handleSubmit} = useFormik({
+    const {values, errors, touched, handleBlur, handleChange, isSubmitting, handleSubmit, resetForm} = useFormik({
       initialValues: initialValues,
       validationSchema: factorValidationSchema,
       onSubmit
     });
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add New Emission Factor</DialogTitle>
-      <DialogContent>
-
+    <Dialog open={open} onClose={handleClose}>
+      
+      <DialogTitle sx={{ paddingBottom: 0, paddingTop: 2 }}>Dodaj nowy wskaźnik</DialogTitle>
       <form onSubmit={handleSubmit}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" component="h1" sx={{ mb: 3 }}>
-            Załóż darmowe konto
-          </Typography>
-        </Box>
+      <DialogContent sx={{ paddingTop: 0 }}>
+       
+      <TextField 
+        variant="outlined" 
+        margin="normal" 
+        required 
+        fullWidth id="name" 
+        label="nazwa" 
+        name="name" 
+        autoComplete="name" 
+        value={values.name}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.name && Boolean(errors.name)} 
+        helperText={touched.name && errors.name}
+        /> 
+      
+      <Box display="flex" flexDirection="row">  
         <TextField 
         variant="outlined" 
         margin="normal" 
         required 
         fullWidth id="value" 
-        label="value" 
+        label="wartość" 
         name="value" 
         autoComplete="value" 
         value={values.value}
@@ -107,48 +146,127 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
         error={touched.value && Boolean(errors.value)} 
         helperText={touched.value && errors.value}
         />
-        <TextField 
-        variant="outlined" 
-        margin="normal" 
-        required 
-        fullWidth id="name" 
-        label="name" 
-        name="name" 
-        autoComplete="name" 
-        value={values.name}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        error={touched.name && Boolean(errors.name)} 
-        helperText={touched.name && errors.name}
-        />
+        
+        <FormControl sx={{ marginLeft: 1, marginTop: 2, minWidth: 120 }}>
+        <InputLabel id="region-label">miara</InputLabel>
+        <Select
+          labelId="units-label"
+          required
+          id="units"
+          name="units"
+          value={values.units}
+          label="units"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          sx={{
+            height: 56, 
+            '& .MuiSelect-select': {
+              paddingTop: '5px',
+              paddingBottom: '5px'
+            }
+          }}
+        >
+          {unitsList.map((region) => {
+                return (
+                  <MenuItem key={region.id} value={region.name}>
+                    <ListItemText primary={region.name} />
+                  </MenuItem>
+                );
+              })}
+        </Select>
+        <FormHelperText>{touched.region && errors.region}</FormHelperText>
+        </FormControl>
+      </Box>
+
+        <Box display="flex" flexDirection="row">
+        <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="region-label">region</InputLabel>
+        <Select
+          labelId="region-label"
+          id="region"
+          name="region"
+          value={values.region}
+          label="Region"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          sx={{
+            height: 56, 
+            '& .MuiSelect-select': {
+              paddingTop: '5px',
+              paddingBottom: '5px'
+            }
+          }}
+        >
+          {regionsList.map((region) => {
+                return (
+                  <MenuItem key={region.id} value={region.name}>
+                    <ListItemText primary={region.name} />
+                  </MenuItem>
+                );
+              })}
+        </Select>
+        <FormHelperText>{touched.region && errors.region}</FormHelperText>
+      </FormControl>
+      <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="year-label">rok</InputLabel>
         <Select
           labelId="year-label"
           id="year"
+          name="year"
           value={values.year}
           label="year"
           onChange={handleChange}
           onBlur={handleBlur}
-          error={touched.year && Boolean(errors.year)} 
+          sx={{
+            height: 56, 
+            '& .MuiSelect-select': {
+              paddingTop: '5px',
+              paddingBottom: '5px'
+            }
+          }}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {yearsList.map((year) => {
+                return (
+                  <MenuItem key={year.id} value={year.name}>
+                    <ListItemText primary={year.name} />
+                  </MenuItem>
+                );
+              })}
         </Select>
-
-        <Typography component="div">
-        <Switch name="marketing" defaultChecked inputProps={{ 'aria-label': 'marketing consent' }} />
-        Public
+        <FormHelperText>{touched.region && errors.region}</FormHelperText>
+      </FormControl>
+      <Typography component="div" marginTop={2}>
+        <Switch name="public" defaultChecked inputProps={{ 'aria-label': 'marketing consent' }} />
+        publiczny
         </Typography>
-        </form>
+      </Box>
+      
+      <TextField 
+        variant="outlined" 
+        multiline
+        margin="normal"  
+        fullWidth id="comment" 
+        label="komentarz" 
+        name="comment" 
+        autoComplete="comment" 
+        value={values.comment}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.comment && Boolean(errors.comment)} 
+        helperText={touched.comment && errors.comment}
+        />
+      
+      
+        
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={() => console.log(`ddd`)}>Add</Button>
+      <Box display="flex" flexDirection="row" sx={{marginBottom:"10px"}}>
+        <Button variant="text" sx={{marginRight:"20px"}} onClick={handleClose}>Cancel</Button>
+        <Button variant="outlined" sx={{marginRight:"20px"}} onClick={() => console.log(`ddd`)}>Add</Button>
+      </Box>
         
       </DialogActions>
+      </form>
     </Dialog>
   );
 };

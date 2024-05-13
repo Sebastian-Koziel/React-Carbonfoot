@@ -5,19 +5,19 @@ import { CreateFactorDto } from './interfaces/createFactor.dto';
 
 @Injectable()
 export class FactorsService {
-    constructor(@Inject('FACTOR_MODEL') private userModel: Model<Factor>) {}
+    constructor(@Inject('FACTOR_MODEL') private factorModel: Model<Factor>) {}
     
     async findAll(): Promise<Factor[]> {
-        return this.userModel.find().select('-password').exec();
+        return this.factorModel.find().select('-password').exec();
     }
 
     async create(createUserDto: CreateFactorDto): Promise<any>{
-        const createdUser = await this.userModel.create(createUserDto)
+        const createdUser = await this.factorModel.create(createUserDto)
         return createdUser._id;
     }
 
     async findOne(id: string): Promise<Factor> {
-        return this.userModel.findById(id);
+        return this.factorModel.findById(id);
     }
 
     async update(id: string, attrs: Partial<Factor>): Promise<Factor>{
