@@ -1,5 +1,6 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material"
 import MenuIcon from '@mui/icons-material/Menu';
+import Logo from "../../home/Logo";
 
 interface Props {
   handleDrawerToggle: () => void;
@@ -21,9 +22,7 @@ const TopBar = (props: Props) => {
           >
             <MenuIcon />
       </IconButton>
-        <Typography variant="h6" noWrap>
-          Nazwa Dashboardu
-        </Typography>
+        <Logo/>
       </Toolbar>
     </AppBar>
   )

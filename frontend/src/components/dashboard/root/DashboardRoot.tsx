@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useNavigate } from "react-router-dom"
 import MainNav from "../mainNav/MainNav"
 import TopBar from "../topbar/TopBar"
-import { Box, CssBaseline, Toolbar } from "@mui/material"
+import { Box, Container, CssBaseline, Toolbar } from "@mui/material"
 import { useState } from "react";
 import { isLogged } from "../../../storage/localStorage";
 
@@ -34,8 +34,9 @@ const DashboardRoot = () => {
 
   return (
     <>
+      <Container>
       <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
+        
         <TopBar handleDrawerToggle={handleDrawerToggle} />
         <MainNav width={drawerWidth} mobileOpen={mobileOpen} handleDrawerClose={handleDrawerClose} handleDrawerTransitionEnd={handleDrawerTransitionEnd} />
         <Box component="main"
@@ -48,6 +49,7 @@ const DashboardRoot = () => {
           <Outlet />
         </Box>
       </Box>
+      </Container>
     </>
   )
 }

@@ -1,7 +1,14 @@
+import { Box, Button, Typography } from "@mui/material"
 
 const Products = () => {
   return (
-    <div>Products</div>
+   <>
+      <Box>
+      <Typography variant="h6">Witaj w świecie wskaźników emisji!</Typography>
+      <Button>assdas</Button>
+      </Box>
+      
+      </>
   )
 }
 
