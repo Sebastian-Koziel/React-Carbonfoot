@@ -11,6 +11,7 @@ import Products from './components/dashboard/products/Products'
 import RegisterConfirmation from "./components/confirmation/Confirmation";
 import Validation from "./components/confirmation/Validation";
 import { tokenValidationLoader } from "./components/confirmation/EmailValidationFetch";
+import { fetchFactors } from "./components/dashboard/emissionFactors/fetch/fetchFactors";
 
 
 
@@ -48,7 +49,8 @@ const App = () => {
         },
         {
           path: "emmisionFactors",
-          element: <EmissionFactors />
+          element: <EmissionFactors />,
+          loader: fetchFactors
         },
         {
           path: "raports",

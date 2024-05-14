@@ -1,40 +1,26 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Box, Typography, Switch, Select, MenuItem, ListItemText, InputLabel, FormHelperText, FormControl } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Box, Typography, Switch, Select, MenuItem, ListItemText, InputLabel, FormHelperText, FormControl, Alert, Snackbar } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { factorValidationSchema } from './FactorValidationSchema';
 import { endPoints } from '../../../endPoints/endPoints';
 import { Factor, NewFactor } from '../../../interfaces/interfaces';
+import { storageGetUser } from '../../../storage/localStorage';
+
 
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  handleSnackbar: () => void;
+  revalidator: any
+regionsList: any
+unitsList: any
+yearsList: any
 }
 
-const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
-   const regionsList = [
-    {id:0, name:"all"},
-    {id:1, name:"Polska"},
-    {id:2, name:"Niemcy"},
-    {id:3, name:"EU"}
-    ]
-
-    const unitsList = [
-      {id:0, name:"g"},
-      {id:1, name:"kg"},
-      {id:2, name:"tony"},
-      
-      ]
-
-      const yearsList = [
-        {id:0, name:"2021"},
-        {id:1, name:"2022"},
-        {id:2, name:"2023"},
-        {id:3, name:"2024"},
-        
-        ]
-
+const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, revalidator, regionsList, unitsList, yearsList }) => {
+   
     const navigate = useNavigate();
 
     interface FormValues {
@@ -47,7 +33,7 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
         isPublic: boolean
         addedBy: string
       }
- 
+      
       const handleClose = () => {
         resetForm(); 
         onClose(); 
@@ -55,6 +41,7 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
 
     const onSubmit = async (values:FormValues, actions:FormikHelpers<FormValues>) => {
     
+        const user = storageGetUser();
 
         const newFactor: NewFactor = {
             name : values.name,
@@ -64,12 +51,12 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
             units: values.units,
             comment: values.comment,
             isPublic: values.isPublic,
-            addedBy: values.addedBy,
+            addedBy: user._id,
     
         }
         console.log(newFactor)
         try {
-          const response = await fetch(endPoints.registerUser, {
+          const response = await fetch(endPoints.addEmissionFactor, {
             method: 'POST',
             headers: {
               'Content-type': 'application/json',
@@ -82,10 +69,12 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
           if(!response.ok){
             throw new Error(data.message || `Something went wrong`);
           }
-    
+          
           actions.resetForm();
           actions.setSubmitting(false);
-          navigate("/confirmation");
+          handleSnackbar();
+          handleClose();
+          revalidator.revalidate();
     
         } catch (error: any) {
           actions.setFieldError(`general`, error.message);
@@ -166,7 +155,7 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
             }
           }}
         >
-          {unitsList.map((region) => {
+          {unitsList.map((region:any) => {
                 return (
                   <MenuItem key={region.id} value={region.name}>
                     <ListItemText primary={region.name} />
@@ -197,7 +186,7 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
             }
           }}
         >
-          {regionsList.map((region) => {
+          {regionsList.map((region:any) => {
                 return (
                   <MenuItem key={region.id} value={region.name}>
                     <ListItemText primary={region.name} />
@@ -225,7 +214,7 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
             }
           }}
         >
-          {yearsList.map((year) => {
+          {yearsList.map((year:any) => {
                 return (
                   <MenuItem key={year.id} value={year.name}>
                     <ListItemText primary={year.name} />
@@ -262,12 +251,13 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose }) => {
       <DialogActions>
       <Box display="flex" flexDirection="row" sx={{marginBottom:"10px"}}>
         <Button variant="text" sx={{marginRight:"20px"}} onClick={handleClose}>Cancel</Button>
-        <Button variant="outlined" sx={{marginRight:"20px"}} onClick={() => console.log(`ddd`)}>Add</Button>
+        <Button variant="outlined" sx={{marginRight:"20px"}} type="submit">Add</Button>
       </Box>
         
       </DialogActions>
       </form>
     </Dialog>
+    
   );
 };
 

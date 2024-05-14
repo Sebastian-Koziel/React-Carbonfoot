@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateFactorDto } from './interfaces/createFactor.dto';
 import { FactorsService } from './factors.service';
+import { Factor } from './interfaces/factor.interface';
 
 @Controller('factors')
 export class FactorsController {
@@ -10,8 +11,13 @@ export class FactorsController {
     
     //add
     @Post('/create')
-    async registerUser(@Body() body: CreateFactorDto) {
+    async addNewFactor(@Body() body: CreateFactorDto) {
         return await this.factorsService.create(body);
+    }
+    //get all public ones and mine
+    @Get()
+    async findAll(): Promise<Factor[]> {
+        return this.factorsService.findAllPublicOrMine();
     }
 
 

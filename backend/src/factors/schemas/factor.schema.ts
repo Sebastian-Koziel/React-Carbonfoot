@@ -1,4 +1,3 @@
-import { timeStamp } from 'console';
 import * as mongoose from 'mongoose';
 
 export const FactorSchema = new mongoose.Schema({
@@ -27,25 +26,25 @@ export const FactorSchema = new mongoose.Schema({
     },
 
     ranks: {
-        1: { type: Number, dafault:0 },
-        2: { type: Number, dafault:0 },
-        3: { type: Number, dafault:0 },
-        4: { type: Number, dafault:0 },
-        5: { type: Number, dafault:0 },
-        sum: { type: Number, dafault:0 },
-        average: { type: Number, dafault:0 }
+        1: { type: Number, default:0 },
+        2: { type: Number, default:0 },
+        3: { type: Number, default:0 },
+        4: { type: Number, default:0 },
+        5: { type: Number, default:0 },
+        sum: { type: Number, default:0 },
+        average: { type: Number, default:0 }
       },
 
     usedTimes: {
         type: Number,
-        dafault:0
+        default:0
     },
     isPublic: {
         type: Boolean
     },
     isUsed: {
         type: Boolean,
-        dafault:false
+        default:false
     },
     whereUsed: [{
         type: String,
@@ -53,15 +52,15 @@ export const FactorSchema = new mongoose.Schema({
     }],
     isActive: {
         type: Boolean,
-        dafault:true
+        default:true
     },
     addedBy: {
         type: String
     },
     addedTime: {
-        type: timeStamp
+        type: Date,
+        default: Date.now
     }
-    
 });
 
 

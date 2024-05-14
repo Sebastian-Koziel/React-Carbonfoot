@@ -6,6 +6,7 @@ interface FetchError {
   error: string;
 }
 
+
 export const fetchFactors = async (): Promise<Factor[] | FetchError> => {
    
     const token = storageGetToken();

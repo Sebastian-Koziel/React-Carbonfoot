@@ -7,8 +7,8 @@ import { CreateFactorDto } from './interfaces/createFactor.dto';
 export class FactorsService {
     constructor(@Inject('FACTOR_MODEL') private factorModel: Model<Factor>) {}
     
-    async findAll(): Promise<Factor[]> {
-        return this.factorModel.find().select('-password').exec();
+    async findAllPublicOrMine(): Promise<Factor[]> {
+        return this.factorModel.find({ isPublic: true });
     }
 
     async create(createUserDto: CreateFactorDto): Promise<any>{

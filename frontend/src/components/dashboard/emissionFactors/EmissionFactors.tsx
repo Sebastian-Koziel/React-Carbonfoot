@@ -1,15 +1,42 @@
-import { Box, Button, Container, Typography } from "@mui/material"
+import { Alert, Box, Button, Container, Snackbar, Typography } from "@mui/material"
 import { useMemo, useState } from "react";
 import FactorFormModal from "./AddNewFactorModal";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useLoaderData } from "react-router-dom";
 import { Factor } from "../../../interfaces/interfaces";
+import { useRevalidator } from "react-router-dom";
 
-interface FetchError {
-  error: string;
-}
+
 
 const EmissionFactors = () => {
+
+  
+  const regionsList = [
+    {id:0, name:"all"},
+    {id:1, name:"Polska"},
+    {id:2, name:"Niemcy"},
+    {id:3, name:"EU"}
+    ]
+  
+
+  const unitsList = [
+      {id:0, name:"g"},
+      {id:1, name:"kg"},
+      {id:2, name:"tony"},
+      
+    ]
+
+  const yearsList = [
+        {id:0, name:"2021"},
+        {id:1, name:"2022"},
+        {id:2, name:"2023"},
+        {id:3, name:"2024"},
+        
+    ]
+
+
+  let revalidator = useRevalidator();
+
   //handle modal
   const [isModalOpen, setModalOpen] = useState(false);
   
@@ -21,28 +48,40 @@ const EmissionFactors = () => {
     setModalOpen(false);
   };
   //handle fetching
-const routeData = useLoaderData() as Factor[] | FetchError;
-  
-if('error' in routeData){
-  return (
-    <Typography>Coś poszło nie tak: {routeData.error} </Typography>
-  );
-}
-const orders = routeData;
+  const routeData = useLoaderData() as Factor[];
 
-  const rows = [
-    {id:'asdsa',name: 'stefan'},
-    {id:'asdsggga',name: 'misiek'},
-    {id:'as1dsa',name: 'stefan'},
-    {id:'asds2ggga',name: 'misiek'},
-    {id:'as4dsa',name: 'stefan'},
-    {id:'as5dsggga',name: 'misiek'},
-    {id:'as6dsa',name: 'stefan'},
-    {id:'asd7sggga',name: 'misiek'}
-  ]
+const factors = routeData;
+
+console.log(factors);
+  
+const updatedFactors = factors.map(factor => {
+  return {
+      ...factor,  
+      id: factor._id  
+  };
+});
+
+  const rows = updatedFactors;
+
   const columns = useMemo(()=>[
-    {field:'name', headerName:'Avatar', minWidth: 150}
+    {field:'name', headerName:'nazwa', minWidth: 150},
+    {field:'value', headerName:'wartość', minWidth: 150},
+    {field:'year', headerName:'rok'}
   ],[])
+
+  //snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSnackbar = () => {
+    setSnackbarOpen(true);
+  };
+
+  const snackbarHandleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
 
   return (
     <>
@@ -53,11 +92,20 @@ const orders = routeData;
       
       <Box display={"flex"} alignItems="center" flexDirection={"row-reverse"}>
       <Button sx={{marginLeft:2, marginBottom:2}} variant="contained" onClick={handleOpenModal}>Dodaj nowy</Button>
-      <Typography>Brakuje tego czego szukasz?</Typography>
+      <Typography>Brakuje wskaźnika którego szukasz?</Typography>
       
     </Box>
       
-      <FactorFormModal open={isModalOpen} onClose={handleCloseModal} />
+      <FactorFormModal 
+      open={isModalOpen} 
+      onClose={handleCloseModal} 
+      handleSnackbar={handleSnackbar} 
+      revalidator={revalidator} 
+      regionsList={regionsList}
+      unitsList={unitsList}
+      yearsList={yearsList}
+
+      />
     </Box>
 
     <Box width={`100%`}>
@@ -80,6 +128,16 @@ const orders = routeData;
     >
     </DataGrid>
     </Box>
+    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={snackbarHandleClose}>
+        <Alert
+          onClose={snackbarHandleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Wskaźnik emisji dodany!
+        </Alert>
+      </Snackbar>
     </Container>
     </>
   )
