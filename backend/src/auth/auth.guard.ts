@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
         const request = contex.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
         if(!token) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException(`No token provided`);
         }
         try {
             const payload = await this.jwtService.verifyAsync(
@@ -27,12 +27,14 @@ export class AuthGuard implements CanActivate {
                     secret: jwtConstants.secret
                 }
             );
-            request.user = payload;
+            
+            request.user_id = payload.user_id;
+            
         } catch {
             throw new UnauthorizedException();
         }
-        
         return true;
+        
         
     }
 

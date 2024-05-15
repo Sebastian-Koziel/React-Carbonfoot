@@ -8,6 +8,7 @@ export interface User {
     termsAccepted: boolean,
     isEmailVerified: boolean
     emailVerificationToken: string
+    language: string
 }
 
 export interface NewUser {
@@ -20,6 +21,7 @@ export interface NewUser {
     termsAccepted: boolean,
     isEmailVerified: boolean
     emailVerificationToken: string
+    language: string
 }
 
 

@@ -7,8 +7,13 @@ import { CreateFactorDto } from './interfaces/createFactor.dto';
 export class FactorsService {
     constructor(@Inject('FACTOR_MODEL') private factorModel: Model<Factor>) {}
     
-    async findAllPublicOrMine(): Promise<Factor[]> {
-        return this.factorModel.find({ isPublic: true });
+    async findAllPublicOrMine(userId: string): Promise<Factor[]> {
+        return this.factorModel.find({
+            $or: [
+                { isPublic: true },
+                { addedBy: userId }
+            ]
+        });
     }
 
     async create(createUserDto: CreateFactorDto): Promise<any>{

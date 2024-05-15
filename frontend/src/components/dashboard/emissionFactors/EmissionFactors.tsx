@@ -1,40 +1,43 @@
-import { Alert, Box, Button, Container, Snackbar, Typography } from "@mui/material"
-import { useMemo, useState } from "react";
+import { Alert, Box, Button, Container, IconButton, Rating, Snackbar, Typography } from "@mui/material"
+import { useEffect, useMemo, useState } from "react";
 import FactorFormModal from "./AddNewFactorModal";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useLoaderData } from "react-router-dom";
 import { Factor } from "../../../interfaces/interfaces";
 import { useRevalidator } from "react-router-dom";
+import { endPoints } from "../../../endPoints/endPoints";
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
+
 
 
 
 const EmissionFactors = () => {
 
+  const [language, setLanguage] = useState(navigator.language.split('-')[0]);
+  const [unitsList, setUnits] = useState([]);
+  const [regionsList, setregionsLists] = useState([]);
+
+  const yearsList = ['2021', '2022', '2023', '2024'];
+
+  useEffect(()=> {
+    const fetchCountires = async () => {
+      const response = await fetch(endPoints.getRegions + `?lang=${language}`)
+      const data = await response.json();
+      setregionsLists(data);
+    }
+    const fetchUnits = async () => {
+      const response = await fetch(endPoints.getUnits + `?lang=${language}`)
+      const data = await response.json();
+      setUnits(data);
+    }
+
+    fetchCountires();
+    fetchUnits();
+
+  }, [language])
   
-  const regionsList = [
-    {id:0, name:"all"},
-    {id:1, name:"Polska"},
-    {id:2, name:"Niemcy"},
-    {id:3, name:"EU"}
-    ]
-  
-
-  const unitsList = [
-      {id:0, name:"g"},
-      {id:1, name:"kg"},
-      {id:2, name:"tony"},
-      
-    ]
-
-  const yearsList = [
-        {id:0, name:"2021"},
-        {id:1, name:"2022"},
-        {id:2, name:"2023"},
-        {id:3, name:"2024"},
-        
-    ]
-
-
+  console.log(language, unitsList, regionsList)
   let revalidator = useRevalidator();
 
   //handle modal
@@ -51,8 +54,6 @@ const EmissionFactors = () => {
   const routeData = useLoaderData() as Factor[];
 
 const factors = routeData;
-
-console.log(factors);
   
 const updatedFactors = factors.map(factor => {
   return {
@@ -64,9 +65,48 @@ const updatedFactors = factors.map(factor => {
   const rows = updatedFactors;
 
   const columns = useMemo(()=>[
-    {field:'name', headerName:'nazwa', minWidth: 150},
-    {field:'value', headerName:'wartość', minWidth: 150},
-    {field:'year', headerName:'rok'}
+    {field:'name', headerName:'nazwa', minWidth: 100},
+    {field:'value', headerName:'wartość', minWidth: 100},
+    {field:'units', headerName:'miara', minWidth: 100},
+    {field:'year', headerName:'rok'},
+    {field: 'rating',
+      headerName: 'Rating',
+      width: 180,
+      renderCell: (params:any) => {
+        return (
+          <>
+          <Rating
+            name="read-only"
+            value={params.row.ranks.average} // Assuming 'average' is the rating value
+            readOnly
+            precision={0.5}
+          />
+          <Typography marginTop={"-10px"} color={"gray"} fontSize={"9px"}>({params.row.ranks.sum})</Typography>
+          </>
+        );
+      }
+    },
+    {field: 'actions',
+      headerName: 'Actions',
+      sortable: false,
+      width: 150,
+      renderCell: (params:any) => {
+       
+        const onClickEdit = (e:any) => {
+          e.stopPropagation(); // don't select this row after clicking
+          // Example edit action
+          alert(`Editing ${params.id}`);
+        };
+  
+        return (
+          <>
+            <IconButton color="primary" onClick={onClickEdit}>
+              <SettingsRoundedIcon />
+            </IconButton>
+          </>
+        );
+      },
+    },
   ],[])
 
   //snackbar

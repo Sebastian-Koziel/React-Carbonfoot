@@ -31,10 +31,10 @@ const Register = () => {
       marketingConsent: values.marketing,
       termsAccepted: values.terms,
       isEmailVerified: false,
-      emailVerificationToken: ''
+      emailVerificationToken: '',
+      language: navigator.language
 
     }
-    console.log(newUser)
     try {
       const response = await fetch(endPoints.registerUser, {
         method: 'POST',

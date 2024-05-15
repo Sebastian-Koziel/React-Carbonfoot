@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { factorValidationSchema } from './FactorValidationSchema';
 import { endPoints } from '../../../endPoints/endPoints';
 import { Factor, NewFactor } from '../../../interfaces/interfaces';
-import { storageGetUser } from '../../../storage/localStorage';
+import { storageGetToken, storageGetUser } from '../../../storage/localStorage';
 
 
 
@@ -21,8 +21,6 @@ yearsList: any
 
 const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, revalidator, regionsList, unitsList, yearsList }) => {
    
-    const navigate = useNavigate();
-
     interface FormValues {
         name : string
         region: string
@@ -42,7 +40,8 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, reval
     const onSubmit = async (values:FormValues, actions:FormikHelpers<FormValues>) => {
     
         const user = storageGetUser();
-
+        const token = storageGetToken();
+        console.log(values)
         const newFactor: NewFactor = {
             name : values.name,
             region: values.region,
@@ -54,12 +53,13 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, reval
             addedBy: user._id,
     
         }
-        console.log(newFactor)
+        
         try {
           const response = await fetch(endPoints.addEmissionFactor, {
             method: 'POST',
             headers: {
               'Content-type': 'application/json',
+              Authorization: "Bearer "+ token
             },
             body: JSON.stringify(newFactor),
           });
@@ -155,15 +155,15 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, reval
             }
           }}
         >
-          {unitsList.map((region:any) => {
+          {unitsList.map((unit:any) => {
                 return (
-                  <MenuItem key={region.id} value={region.name}>
-                    <ListItemText primary={region.name} />
+                  <MenuItem key={unit.id} value={unit.id}>
+                    <ListItemText primary={unit.name} />
                   </MenuItem>
                 );
               })}
         </Select>
-        <FormHelperText>{touched.region && errors.region}</FormHelperText>
+        <FormHelperText>{touched.units && errors.units}</FormHelperText>
         </FormControl>
       </Box>
 
@@ -188,7 +188,7 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, reval
         >
           {regionsList.map((region:any) => {
                 return (
-                  <MenuItem key={region.id} value={region.name}>
+                  <MenuItem key={region.id} value={region.id}>
                     <ListItemText primary={region.name} />
                   </MenuItem>
                 );
@@ -216,16 +216,21 @@ const FactorFormModal: React.FC<Props> = ({ open, onClose, handleSnackbar, reval
         >
           {yearsList.map((year:any) => {
                 return (
-                  <MenuItem key={year.id} value={year.name}>
-                    <ListItemText primary={year.name} />
+                  <MenuItem key={year} value={year}>
+                    <ListItemText primary={year} />
                   </MenuItem>
                 );
               })}
         </Select>
-        <FormHelperText>{touched.region && errors.region}</FormHelperText>
+        <FormHelperText>{touched.year && errors.year}</FormHelperText>
       </FormControl>
       <Typography component="div" marginTop={2}>
-        <Switch name="public" defaultChecked inputProps={{ 'aria-label': 'marketing consent' }} />
+        <Switch 
+        name="isPublic"
+        checked={values.isPublic}
+        onChange={handleChange}
+        onBlur={handleBlur} 
+        inputProps={{ 'aria-label': 'marketing consent' }} />
         publiczny
         </Typography>
       </Box>

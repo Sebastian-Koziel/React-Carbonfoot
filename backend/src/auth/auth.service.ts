@@ -75,7 +75,7 @@ export class AuthService{
             throw new BadRequestException('Wrong user or password');
         }
 
-        const payload = {username: user.email, sub: user._id};
+        const payload = {username: user.email, sub: user._id, user_id:user._id};
         
 
         const userWithNoPassword = await this.usersService.findOneNoPass(user._id);

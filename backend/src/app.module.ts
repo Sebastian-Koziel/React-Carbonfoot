@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MailerAppModule } from './mailer/mailer.module';
 import { FactorsModule } from './factors/factors.module';
 import { RaportsModule } from './raports/raports.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [UsersModule, MailerAppModule,
@@ -15,6 +16,7 @@ import { RaportsModule } from './raports/raports.module';
     }),
     FactorsModule,
     RaportsModule,
+    UtilsModule
   ],
   controllers: [AppController],
   providers: [AppService],
