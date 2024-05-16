@@ -9,6 +9,7 @@ export interface User {
     isEmailVerified: boolean
     emailVerificationToken: string
     language: string
+    votedFor: [string]
 }
 
 export interface NewUser {

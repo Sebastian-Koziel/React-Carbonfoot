@@ -8,6 +8,8 @@ import { useRevalidator } from "react-router-dom";
 import { endPoints } from "../../../endPoints/endPoints";
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
+import FactorDetailsModal from "./DetailsFactorModal";
+
 
 
 
@@ -18,7 +20,7 @@ const EmissionFactors = () => {
   const [unitsList, setUnits] = useState([]);
   const [regionsList, setregionsLists] = useState([]);
 
-  const yearsList = ['2021', '2022', '2023', '2024'];
+  const yearsList: string[] = ['2021', '2022', '2023', '2024'];
 
   useEffect(()=> {
     const fetchCountires = async () => {
@@ -37,11 +39,10 @@ const EmissionFactors = () => {
 
   }, [language])
   
-  console.log(language, unitsList, regionsList)
   let revalidator = useRevalidator();
 
-  //handle modal
-  const [isModalOpen, setModalOpen] = useState(false);
+  //handle form modal
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
   
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -49,6 +50,22 @@ const EmissionFactors = () => {
 
   const handleCloseModal = () => {
     setModalOpen(false);
+  };
+  //handle details modal
+  const [isDetailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
+  const [selectedFactorId, setSelectedFactorId] = useState<string | null>(null);
+  const [selectedFactorName, setselectedFactorName] = useState<string | null>(null);
+  
+  const handleOpenDetailsModal = (factorId: string, factorName: string) => {
+    setSelectedFactorId(factorId);
+    setselectedFactorName(factorName);
+    setDetailsModalOpen(true);
+  };
+
+  const handleCloseDetailsModal = () => {
+    setDetailsModalOpen(false);
+    setselectedFactorName(null);
+    setSelectedFactorId(null);
   };
   //handle fetching
   const routeData = useLoaderData() as Factor[];
@@ -77,7 +94,7 @@ const updatedFactors = factors.map(factor => {
           <>
           <Rating
             name="read-only"
-            value={params.row.ranks.average} // Assuming 'average' is the rating value
+            value={params.row.ranks.average}
             readOnly
             precision={0.5}
           />
@@ -92,10 +109,9 @@ const updatedFactors = factors.map(factor => {
       width: 150,
       renderCell: (params:any) => {
        
-        const onClickEdit = (e:any) => {
-          e.stopPropagation(); // don't select this row after clicking
-          // Example edit action
-          alert(`Editing ${params.id}`);
+        const onClickEdit = (e:React.MouseEvent<HTMLButtonElement>) => {
+          e.stopPropagation(); 
+          handleOpenDetailsModal(params.id as string, params.row.name as string);
         };
   
         return (
@@ -144,8 +160,21 @@ const updatedFactors = factors.map(factor => {
       regionsList={regionsList}
       unitsList={unitsList}
       yearsList={yearsList}
-
       />
+
+      < FactorDetailsModal
+      factorId={selectedFactorId}
+      open={isDetailsModalOpen} 
+      onClose={handleCloseDetailsModal} 
+      handleSnackbar={handleSnackbar} 
+      revalidator={revalidator} 
+      regionsList={regionsList}
+      unitsList={unitsList}
+      yearsList={yearsList}
+      selectedFactorName={selectedFactorName}
+      />
+
+
     </Box>
 
     <Box width={`100%`}>
