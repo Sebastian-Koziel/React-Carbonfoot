@@ -84,7 +84,7 @@ const Navbar = () => {
                             <Button component={Link} to="/dashboard" variant="outlined">PANEL UŻYTKOWNIKA</Button>
                         ) : (
                             <>
-                                <Button component={Link} to="/login" variant="text">ZALOGUJ SIĘ</Button>
+                                <Button component={Link} to="/login" variant="outlined">ZALOGUJ SIĘ</Button>
                                 <Button component={Link} to="/register" variant="outlined">ZAREJESTRUJ SIĘ</Button>
                             </>
                     )}

@@ -12,6 +12,8 @@ import RegisterConfirmation from "./components/confirmation/Confirmation";
 import Validation from "./components/confirmation/Validation";
 import { tokenValidationLoader } from "./components/confirmation/EmailValidationFetch";
 import { fetchFactors } from "./components/dashboard/emissionFactors/fetch/fetchFactors";
+import AddRaport from "./components/dashboard/raports/AddRaport";
+import RaportsRoot from "./components/dashboard/raports/Root";
 
 
 
@@ -54,7 +56,17 @@ const App = () => {
         },
         {
           path: "raports",
-          element: <Raports />
+          element: <RaportsRoot />,
+          children: [
+            {
+              index: true,
+              element: <Raports />,
+            },
+            {
+              path: "new",
+              element: <AddRaport />,
+            },
+          ]
         },
         {
           path: "products",
