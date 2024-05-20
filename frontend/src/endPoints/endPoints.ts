@@ -7,4 +7,10 @@ export const endPoints = {
 
     getRegions: `http://localhost:3000/utils/regions`,
     getUnits: `http://localhost:3000/utils/units`,
+
+    getRaports: `http://localhost:3000/raports`,
+    addRaport: `http://localhost:3000/raports/create`,
+    fetchRaportById: `http://localhost:3000/raports/`,
+    deleteRaport:`http://localhost:3000/raports/`
+
 }

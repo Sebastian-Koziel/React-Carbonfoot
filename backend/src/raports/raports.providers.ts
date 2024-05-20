@@ -2,7 +2,7 @@ import { Connection } from 'mongoose';
 import { RaportSchema } from './schemas/raport.schema';
 
 
-export const factorsProviders = [
+export const raportsProviders = [
   {
     provide: 'RAPORT_MODEL',
     useFactory: (connection: Connection) => connection.model('Raport', RaportSchema),

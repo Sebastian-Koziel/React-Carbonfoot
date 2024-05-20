@@ -43,7 +43,7 @@ const DashboardRoot = () => {
           sx={{
             flexGrow: 1,
             p: 3,
-            marginLeft: { xs: `10px`, sm: `200px` }
+            marginLeft: { xs: `10px`, sm: `160px` }
           }}>
           <Toolbar />
           <Outlet />

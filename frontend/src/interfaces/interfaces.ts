@@ -64,3 +64,16 @@ export interface NewFactor {
     isPublic: boolean
     addedBy: string
 }
+
+
+export interface NewRaport {
+    
+    addedBy: string
+    name: string
+}
+
+export interface Raport {
+    _id: string
+    addedBy: string
+    name: string
+}

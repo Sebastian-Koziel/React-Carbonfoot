@@ -11,12 +11,17 @@ export class RaportsService {
         return await this.raportsModel.find({ addedBy: userId }).exec();
     }
 
-    async create(createUserDto: CreateRaportDto): Promise<any>{
-        const createdRaport = await this.raportsModel.create(createUserDto)
+    async create(createRaportDto: CreateRaportDto): Promise<Raport>{
+        const createdRaport = await this.raportsModel.create(createRaportDto)
         return createdRaport;
     }
 
     async findOne(id: string): Promise<Raport> {
-        return this.raportsModel.findById(id);
+        return await this.raportsModel.findById(id);
+    }
+
+    async remove(id:string){
+        const filter = {_id : id}
+        return await this.raportsModel.deleteOne(filter);
     }
 }

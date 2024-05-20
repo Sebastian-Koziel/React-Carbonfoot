@@ -12,8 +12,10 @@ import RegisterConfirmation from "./components/confirmation/Confirmation";
 import Validation from "./components/confirmation/Validation";
 import { tokenValidationLoader } from "./components/confirmation/EmailValidationFetch";
 import { fetchFactors } from "./components/dashboard/emissionFactors/fetch/fetchFactors";
-import AddRaport from "./components/dashboard/raports/AddRaport";
 import RaportsRoot from "./components/dashboard/raports/Root";
+import RaportDetails from "./components/dashboard/raports/RaportDetails";
+import { raportDetailsLoader } from "./components/dashboard/raports/fetch/raportDetailsLoader";
+import { fetchAllRaports } from "./components/dashboard/raports/fetch/fetchRaports";
 
 
 
@@ -61,10 +63,12 @@ const App = () => {
             {
               index: true,
               element: <Raports />,
+              loader: fetchAllRaports
             },
             {
-              path: "new",
-              element: <AddRaport />,
+              path: ":raportId",
+              element: <RaportDetails />,
+              loader: raportDetailsLoader
             },
           ]
         },

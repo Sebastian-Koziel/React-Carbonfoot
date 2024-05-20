@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { RaportsService } from './raports.service';
 import { User } from 'src/auth/userDecorator';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -13,7 +13,8 @@ export class RaportsController {
         ) {}
     
     //add
-    @Post('/register')
+    @UseGuards(AuthGuard)
+    @Post('/create')
     async addRaport(@Body() body: CreateRaportDto) {
         return await this.raportsService.create(body);
     }
@@ -26,9 +27,17 @@ export class RaportsController {
     }
 
     //find one
+    @UseGuards(AuthGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<Raport>{
-        return this.raportsService.findOne(id);
+        return await this.raportsService.findOne(id);
     }
 
+    //remove
+    
+    @UseGuards(AuthGuard)
+    @Delete('/:id')
+    async remove(@Param('id') id:string){
+        this.raportsService.remove(id);
+    }
 }

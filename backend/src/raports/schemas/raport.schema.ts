@@ -6,6 +6,10 @@ export const RaportSchema = new mongoose.Schema({
     },
     addedBy : {
         type: String
+    },
+    addedAt : {
+        type: Date,
+        default: Date.now
     }
 });
 
