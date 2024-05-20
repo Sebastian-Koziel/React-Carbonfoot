@@ -1,6 +1,8 @@
 import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
 import { mainNavData } from "../data/data";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { eventBus } from "../../../hooks/eventBus";
  
 interface Props {
   width: number;
@@ -23,6 +25,7 @@ const MainNav = (props: Props) => {
     navigate(path); 
     handleDrawerClose(); 
   };
+
 
   const drawer = (
     <div>

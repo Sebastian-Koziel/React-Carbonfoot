@@ -22,7 +22,6 @@ export class RaportsController {
     @UseGuards(AuthGuard)
     @Get()
     async findAll(@User() user_id: string): Promise<Raport[]> {
-        
         return this.raportsService.findAllByUser(user_id);
     }
 

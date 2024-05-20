@@ -6,10 +6,11 @@ import { NewRaport, Raport } from '../../../interfaces/interfaces';
 import { storageGetUser } from '../../../storage/localStorage';
 import { addNewRaportFetcher } from './fetch/addRaportFetch';
 import { FetchError } from './fetch/raportDetailsLoader';
+import { eventBus } from '../../../hooks/eventBus';
 
 
 const RaportsList: React.FC = () => {
-  //handle fetching
+    //handle fetching
   const routeData = useLoaderData() as Raport[] | FetchError;
   
   if('error' in routeData){
@@ -17,7 +18,9 @@ const RaportsList: React.FC = () => {
       (<Typography>sadasdas</Typography>)
     );
   }
+  
 const raports = routeData;
+
 
   const navigate = useNavigate();
 
@@ -32,10 +35,10 @@ const raports = routeData;
     
       try {
         const response = await addNewRaportFetcher(newRaport);
-        //success toast
+        eventBus.emit('customEvent', { message: 'Raport dodany!', severity: 'success' });
         navigate(`${response._id}`);
       } catch (error:any) {
-       //error toast
+        eventBus.emit('customEvent', { message: `Coś poszło nie tak. ${error}`, severity: 'error' });
       }
     }
   
@@ -45,6 +48,7 @@ const raports = routeData;
     }
 
   return (
+    <>
     <Box sx={{ padding: 4 }}>
       <Button variant="contained" onClick={addNewHandler} color="primary" sx={{ marginBottom: 2 }}>
         Add New Raport
@@ -66,6 +70,8 @@ const raports = routeData;
         ))
       )}
     </Box>
+    
+    </>
   );
 };
 
