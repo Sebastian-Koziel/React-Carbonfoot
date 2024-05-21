@@ -1,4 +1,4 @@
-import Typography from '@mui/material/Typography';
+
 import Box from '@mui/material/Box';
 
 interface TabPanelProps {
@@ -20,9 +20,16 @@ export const CustomTabPanel = (props: TabPanelProps) => {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
   );
+}
+
+export const a11yProps = (index: number) => {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
 }
