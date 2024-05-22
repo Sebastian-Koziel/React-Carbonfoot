@@ -1,6 +1,6 @@
 // src/components/AddRaport.tsx
 import React, { useState } from 'react';
-import { Box, Button, Tabs, Typography, Stack, Tooltip } from '@mui/material';
+import { Box, Button, Tabs, Typography, Stack, Tooltip, Card } from '@mui/material';
 import { Link, useLoaderData, useNavigate } from "react-router-dom"
 import { FetchError, raportDetailsConsolidatedData } from './fetch/raportDetailsLoader';
 import { deleteRaport } from './fetch/deleteRaport';
@@ -11,12 +11,26 @@ import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
 //tabs
 import Tab from '@mui/material/Tab';
 import { CustomTabPanel, a11yProps } from './CustomTab';
+import { Raport } from '../../../interfaces/interfaces';
+import AddEmissionModal from './AddEmissionModal';
+
 
 
 const RaportDetails: React.FC = () => {
 
 const [value, setValue] = React.useState(0);
 const navigate = useNavigate();
+
+ //handle form modal
+ const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  
+ const handleOpenModal = () => {
+   setModalOpen(true);
+ };
+
+ const handleCloseModal = () => {
+   setModalOpen(false);
+ };
 
   //handle fetching
   const routeData = useLoaderData() as raportDetailsConsolidatedData | FetchError;
@@ -36,6 +50,11 @@ const navigate = useNavigate();
     //TODO - do proper error handling
     return (<Typography>sadasdas</Typography>);
   }
+
+  
+ // Initialize raport state
+ const [currentRaport, setCurrentRaport] = useState<Raport>(raport);
+  
 
   //tabs
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -59,7 +78,7 @@ const navigate = useNavigate();
   };
   
   const addNewFactor = (type:string)=>{
-    console.log(type)
+    handleOpenModal();
   }
 
   return (
@@ -101,7 +120,7 @@ const navigate = useNavigate();
           </Tooltip>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button sx={{mt:2}}  onClick={()=>{addNewFactor('stationary combustion')}} variant="text">dodaj emisje</Button>
+        <Button sx={{mt:2}}  onClick={()=>{addNewFactor('stationaryCombustion')}} variant="text">dodaj emisje</Button>
         </Box>
         
         <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
@@ -111,7 +130,7 @@ const navigate = useNavigate();
           </Tooltip>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button sx={{mt:2}}  onClick={()=>{addNewFactor('mobile combustion')}} variant="text">dodaj emisje</Button>
+        <Button sx={{mt:2}}  onClick={()=>{addNewFactor('mobileCombustion')}} variant="text">dodaj emisje</Button>
         </Box>
         <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
           <Typography variant='h5'>Emisje procesowe</Typography>
@@ -161,6 +180,11 @@ const navigate = useNavigate();
       </CustomTabPanel>
     </Box>
     <ConfirmDialog />
+    < AddEmissionModal
+      open={isModalOpen} 
+      onClose={handleCloseModal} 
+      factors={factors}
+      />
     </>
   );
 };

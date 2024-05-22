@@ -10,6 +10,21 @@ export const RaportSchema = new mongoose.Schema({
     addedAt : {
         type: Date,
         default: Date.now
+    },
+    emisions: {
+        scope1:{
+            stationaryCombustion: {
+                type: Array,
+                default: []
+            },
+            mobileCombustion: {
+                type: Array,
+                default: []
+            }
+        },
+        scope2: {
+            
+        }
     }
 });
 

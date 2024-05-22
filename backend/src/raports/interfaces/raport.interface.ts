@@ -5,5 +5,14 @@ export interface Raport extends Document {
     name : string
     addedBy: string
     addedAt: string
+    emisions: {
+        scope1:{
+            stationaryCombustion: [],
+            mobileCombustion: []
+        },
+        scope2: {
+            
+        }
+    }
 };
 

@@ -54,7 +54,6 @@ export interface Factor  {
 };
 
 export interface NewFactor {
-    
     name : string
     region: string
     year: string
@@ -67,7 +66,6 @@ export interface NewFactor {
 
 
 export interface NewRaport {
-    
     addedBy: string
     name: string
 }
@@ -76,4 +74,13 @@ export interface Raport {
     _id: string
     addedBy: string
     name: string
+    emisions: {
+        scope1:{
+            stationaryCombustion: [],
+            mobileCombustion: []
+        },
+        scope2: {
+            
+        }
+    }
 }

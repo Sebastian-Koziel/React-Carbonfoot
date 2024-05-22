@@ -31,7 +31,8 @@ const EmissionFactors = () => {
     const fetchUnits = async () => {
       const response = await fetch(endPoints.getUnits + `?lang=${language}`)
       const data = await response.json();
-      setUnits(data);
+      console.log(data);
+      setUnits(data.units);
     }
 
     fetchCountires();
