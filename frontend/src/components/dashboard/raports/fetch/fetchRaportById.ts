@@ -7,7 +7,7 @@ interface FetchError {
 }
 
 export const fetchRaportById = async (raport_id: string): Promise<Raport | FetchError> => {
-    console.log(`fethcing`)
+    
     const token = storageGetToken();
 try{
     const response = await fetch(endPoints.fetchRaportById +raport_id, {

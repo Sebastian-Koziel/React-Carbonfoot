@@ -1,22 +1,8 @@
 import * as Yup from 'yup';
 
-const conversionMap = {
-  "1": {
-      "2": 1000,
-      "3": 1000000
-  },
-  "2": {
-      "1": 0.001,
-      "3": 1000
-  },
-  "3": {
-      "1": 0.000001,
-      "2": 0.001
-  },
-  "4":{
-      
-  }
-};
+const conversionMap = localStorage.getItem('conversionTable');
+
+
 
 /* Yup.addMethod(Yup.string, 'checkIfConvertible', function (message) {
   return this.test('check-if-convertible', message, function (value) {
@@ -44,9 +30,25 @@ const conversionMap = {
 
 Yup.addMethod(Yup.string, 'checkIfConvertible', function (message) {
   return this.test('checkIfConvertible', message, function (value) {
+    
+    const { units, factor } = this.parent;
+
+    if (!units || !factor) {
+      return true;
+    }
+    console.log(units)
+    console.log(factor)
+    const factors = JSON.parse(localStorage.getItem('factors'));
+    console.log(factors);
+    console.log(factor === factors[0]._id);
+    const currentfactor = factors.find(f => f._id === factor)
+
+    console.log(currentfactor)
+
     const { path, createError } = this;
     // Your custom logic to check if the value is convertible
     const isConvertible = false;
+    
     return isConvertible || createError({ path, message });
   });
 });

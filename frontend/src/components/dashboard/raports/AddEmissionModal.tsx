@@ -4,12 +4,13 @@ import { Factor } from '../../../interfaces/interfaces';
 import { useEffect, useState } from 'react';
 import { endPoints } from '../../../endPoints/endPoints';
 import { emissionvalidationSchema } from './emissionValidationSchema';
+import { fetchFactors } from '../emissionFactors/fetch/fetchFactors';
+import { storageGetToken } from '../../../storage/localStorage';
 
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  factors: Factor[]
 }
 
 interface FormValues {
@@ -21,11 +22,12 @@ interface FormValues {
     endDate: string;
   }
 
-const AddEmissionModal: React.FC<Props> = ({ open, onClose, factors }) => {
+const AddEmissionModal: React.FC<Props> = ({ open, onClose}) => {
    
     const [language, setLanguage] = useState(navigator.language.split('-')[0]);
     const [unitsList, setUnits] = useState([]);
     const [conversionTable, setConversionTable] = useState(null);
+    const [factors, setFactors] = useState([]);
 
     
       
@@ -36,20 +38,10 @@ const AddEmissionModal: React.FC<Props> = ({ open, onClose, factors }) => {
 
     
     const onSubmit = async (values:FormValues, actions:FormikHelpers<FormValues>) => {
-        console.log(values);
-        const factor = factors.find(factor => factor._id === values.factor) 
-        console.log(factor)
-            
-        if(values.units !== factor.units){
-            if(!conversionTable[factor.units][values.units]){
-                actions.setFieldError(`units`, `jednostki nie są kompatybnilne`)
-            }
-            if(conversionTable[factor.units][values.units]){
-                console.log(conversionTable[factor.units][values.units])
-            }
-        }
+       
+         
         
-
+        
       };
 
     const initialValues = {
@@ -65,16 +57,50 @@ const AddEmissionModal: React.FC<Props> = ({ open, onClose, factors }) => {
         const fetchUnits = async () => {
           const response = await fetch(endPoints.getUnits + `?lang=${language}`)
           const data = await response.json();
-          console.log(data);
+          
           setUnits(data.units);
           setConversionTable(data.conversionMap);
+          localStorage.setItem('unitsList', JSON.stringify(data.units));
+          localStorage.setItem('conversionTable', JSON.stringify(data.conversionMap));
         }
+
+        const fetchEmissionFactors = async () => {
+          const token = storageGetToken();
+          try {
+          const response = await fetch(`${endPoints.getEmissionFactors}`, {
+            headers: {
+              Authorization: "Bearer "+token
+            }
+          });
+          const data = await response.json();
+          setFactors(data)
+          localStorage.setItem('factors', JSON.stringify(data));
+            
+
+        } catch (error) {
+          //TODO proper error handler
+          console.error(error);
+        }
+          
+      }
+
+        
     
         fetchUnits();
+        fetchEmissionFactors();
+        
+
+        //clean up
+        return () => {
+          localStorage.removeItem('factors');
+          localStorage.removeItem('unitsList');
+          localStorage.removeItem('conversionTable');
+        };
     
       }, [language])
 
       
+
 
     const {values, errors, touched, handleBlur, handleChange, isSubmitting, handleSubmit, resetForm} = useFormik({
       initialValues: initialValues,
