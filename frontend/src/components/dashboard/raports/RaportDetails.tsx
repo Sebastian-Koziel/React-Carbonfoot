@@ -13,10 +13,12 @@ import Tab from '@mui/material/Tab';
 import { CustomTabPanel, a11yProps } from './CustomTab';
 import { Raport } from '../../../interfaces/interfaces';
 import AddEmissionModal from './AddEmissionModal';
+import Scope1 from './Scope1';
 
 
 
 const RaportDetails: React.FC = () => {
+
 
 const [value, setValue] = React.useState(0);
 const navigate = useNavigate();
@@ -54,13 +56,14 @@ const navigate = useNavigate();
   
  // Initialize raport state
  const [currentRaport, setCurrentRaport] = useState<Raport>(raport);
+ //current type of emission
+ const [currentEmissionType, setCurrentEmissionType] = useState<string>('');
   
 
   //tabs
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
 
   //handle delete
   const { confirm, ConfirmDialog } = useConfirmDialog();
@@ -77,7 +80,12 @@ const navigate = useNavigate();
     });
   };
   
+  const addEmissionToFactor = () => {
+    
+  }
+
   const addNewFactor = (type:string)=>{
+    setCurrentEmissionType(type);
     handleOpenModal();
   }
 
@@ -112,44 +120,7 @@ const navigate = useNavigate();
             d
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Typography>Zakres 1 obejmuje bezpośrednie emisje gazów cieplarnianych ze źródeł należących do organizacji lub przez nią kontrolowanych</Typography>
-        <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
-          <Typography variant='h5'>Spalanie stacjonarne</Typography>
-          <Tooltip title="gaz ziemny, olej opałowy, LPG, CNG">
-            <HelpOutlineRoundedIcon sx={{ ml: 1 }} />
-          </Tooltip>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button sx={{mt:2}}  onClick={()=>{addNewFactor('stationaryCombustion')}} variant="text">dodaj emisje</Button>
-        </Box>
-        
-        <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
-          <Typography variant='h5'>Spalanie mobilne</Typography>
-          <Tooltip title="benzyna, olej napędowy, LPG, CNG">
-            <HelpOutlineRoundedIcon sx={{ ml: 1 }} />
-          </Tooltip>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button sx={{mt:2}}  onClick={()=>{addNewFactor('mobileCombustion')}} variant="text">dodaj emisje</Button>
-        </Box>
-        <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
-          <Typography variant='h5'>Emisje procesowe</Typography>
-          <Tooltip title="spawanie, elektroliza, kalcynacja, oczyszczalnie ścieków, SF6">
-            <HelpOutlineRoundedIcon sx={{ ml: 1 }} />
-          </Tooltip>
-        </Box>
-        <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
-          <Typography variant='h5'>Emisje ulotne</Typography>
-          <Tooltip title="rurociągi gazowe, instalacje klimatyzacyjne">
-            <HelpOutlineRoundedIcon sx={{ ml: 1 }} />
-          </Tooltip>
-        </Box>
-        <Box display="flex" alignItems="center" mt={2} sx={{backgroundColor: "orange"}}>
-          <Typography variant='h5'>Emisje rolnicze</Typography>
-          <Tooltip title="nawożenie pól, fermencja jelitowa, odwadnianie i uprawa gleb, uprawa ryżu, zarządzanie obornikiem">
-            <HelpOutlineRoundedIcon sx={{ ml: 1 }} />
-          </Tooltip>
-        </Box>
+        <Scope1 addNewFactor={addNewFactor} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
       <Typography>Zakres 2 obejmuje pośrednie emisje gazów cieplarnianych związane z zakupionymi od zewnętrznego dostawcy czynnikami.</Typography>
@@ -182,8 +153,7 @@ const navigate = useNavigate();
     <ConfirmDialog />
     < AddEmissionModal
       open={isModalOpen} 
-      onClose={handleCloseModal} 
-      factors={factors}
+      onClose={handleCloseModal}
       />
     </>
   );

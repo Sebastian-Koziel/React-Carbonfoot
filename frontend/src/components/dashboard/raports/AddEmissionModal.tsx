@@ -1,10 +1,9 @@
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Box, Typography, Switch, Select, MenuItem, ListItemText, InputLabel, FormHelperText, FormControl, Alert, Snackbar, Stack } from '@mui/material';
 import { FormikHelpers, useFormik } from 'formik';
-import { Factor } from '../../../interfaces/interfaces';
+import { Emission, Factor } from '../../../interfaces/interfaces';
 import { useEffect, useState } from 'react';
 import { endPoints } from '../../../endPoints/endPoints';
 import { emissionvalidationSchema } from './emissionValidationSchema';
-import { fetchFactors } from '../emissionFactors/fetch/fetchFactors';
 import { storageGetToken } from '../../../storage/localStorage';
 
 
@@ -39,8 +38,27 @@ const AddEmissionModal: React.FC<Props> = ({ open, onClose}) => {
     
     const onSubmit = async (values:FormValues, actions:FormikHelpers<FormValues>) => {
        
+         const newEmission:Emission = {
+          id: Math.random(),
+          title: values.title,
+          value:values.value,
+          units:values.units,
+          factor:values.factor,
+          startDate:values.startDate,
+          endDate:values.endDate,
+          totalEmission: 0
+         }
          
-        
+         const factor = factors.find(f=>f._id === newEmission.factor);
+         if(newEmission.units === factor.units){
+          newEmission.totalEmission = newEmission.value * factor.value;
+          
+         }
+         else{
+          newEmission.totalEmission = newEmission.value * conversionTable[newEmission.units][factor.units];
+         }
+         
+         handleClose();
         
       };
 
@@ -186,7 +204,7 @@ const AddEmissionModal: React.FC<Props> = ({ open, onClose}) => {
             <FormHelperText>{touched.units && errors.units}</FormHelperText>
           </FormControl>
 
-          <FormControl sx={{ marginLeft: 1, marginTop: 2, minWidth: 300, flex: '1 1 auto' }}>
+          <FormControl sx={{ marginLeft: 1, marginTop: 2, minWidth: 300, flex: '1 1 auto' }} error={touched.factor && Boolean(errors.factor)}>
             <InputLabel id="factor-label">Wskaźnik</InputLabel>
             <Select
               labelId="factor-label"

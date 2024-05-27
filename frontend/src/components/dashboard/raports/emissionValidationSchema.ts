@@ -1,63 +1,44 @@
 import * as Yup from 'yup';
+import { ConversionTable, Factor } from '../../../interfaces/interfaces';
 
-const conversionMap = localStorage.getItem('conversionTable');
+//get data from local storage
+const conversionTableString = localStorage.getItem('conversionTable');
+const conversionMap: ConversionTable = conversionTableString ? JSON.parse(conversionTableString) as ConversionTable : {};
 
-
-
-/* Yup.addMethod(Yup.string, 'checkIfConvertible', function (message) {
-  return this.test('check-if-convertible', message, function (value) {
-    const { path, createError } = this;
-    console.log(`test custom`)
-    const { units, factor } = this.parent;
-
-    if (!units || !factor || !factor.units) {
-      return true;
-    }
-
-    if (units === factor.units) {
-      return true;
-    }
-
-    const fromUnitConversions = conversionMap[units];
-    if (fromUnitConversions && fromUnitConversions[factor.units]) {
-      return true;
-    }
-
-    return createError({ path, message });
-  });
-}); */
-
+const factors: Factor[] = JSON.parse(localStorage.getItem('factors') || '[]') as Factor[];
 
 Yup.addMethod(Yup.string, 'checkIfConvertible', function (message) {
   return this.test('checkIfConvertible', message, function (value) {
     
     const { units, factor } = this.parent;
+    const { path, createError } = this;
 
     if (!units || !factor) {
       return true;
     }
-    console.log(units)
-    console.log(factor)
-    const factors = JSON.parse(localStorage.getItem('factors'));
-    console.log(factors);
-    console.log(factor === factors[0]._id);
-    const currentfactor = factors.find(f => f._id === factor)
 
-    console.log(currentfactor)
+    const currentfactor = factors.find((f:any) => f._id === factor)
+    if(!currentfactor){
+      return createError({ path, message });
+    }
 
-    const { path, createError } = this;
-    // Your custom logic to check if the value is convertible
-    const isConvertible = false;
+    if (units === currentfactor.units) {
+      return true;
+    }
     
-    return isConvertible || createError({ path, message });
+    if(conversionMap[currentfactor.units][units]){
+      return true;
+    }
+    
+    return createError({ path, message });
   });
 });
 
 export const emissionvalidationSchema = Yup.object().shape({
     title: Yup.string().required('Required'),
     value: Yup.number().required('Required'),
-    units: Yup.string().required('Required').checkIfConvertible(`sadasdasd`),
-    factor: Yup.string().required('Required'),
+    units: Yup.string().required('Required'),
+    factor: Yup.string().required('Required').checkIfConvertible(`wskaźnik jest niekomptatybilny`),
     startDate: Yup.date().required('Required'),
     endDate: Yup.date()
       .required('Required')

@@ -84,3 +84,20 @@ export interface Raport {
         }
     }
 }
+
+export interface Emission {
+    id: number
+    title: string
+    value: number
+    units: string
+    factor: string
+    startDate: string
+    endDate: string
+    totalEmission: number
+}
+
+export interface ConversionTable {
+    [unit: string]: {
+      [unit: string]: number;
+    };
+  }
